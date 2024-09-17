@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Star Wars Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #0CC0DF; /* Background color */
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 40%;
+            max-width: 800px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow */
+            padding: 20px;
+        }
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 5px solid #0CC0DF; /* Outer blue border color */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .qa-box {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .question {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .answer {
+            font-size: 1.2em;
+            color: #555;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Text shadow */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img id="quizImage" src="https://i.imgur.com/ncuuRyP.png" alt="Star Wars Quiz Image">
+        <div class="qa-box">
+            <div id="question" class="question">Click the image to get a question!</div>
+            <div id="answer" class="answer"></div>
+        </div>
+    </div>
+    
+    <script>
+        const questionsAndAnswers = [
+            { question: "What is the name of Han Solo's ship?", answer: "The Millennium Falcon" },
+            { question: "Who is Luke Skywalker's father?", answer: "Darth Vader" },
+            { question: "Which planet is the home of the Wookiees?", answer: "Kashyyyk" },
+            { question: "What color is Mace Windu's lightsaber?", answer: "Purple" },
+            { question: "Who is the leader of the Rebel Alliance?", answer: "Mon Mothma" },
+            { question: "What species is Yoda?", answer: "Yoda's species is unknown" },
+            { question: "Who is the Emperor of the Galactic Empire?", answer: "Palpatine (Darth Sidious)" },
+            { question: "What is the name of the Jedi Master who trains Luke Skywalker?", answer: "Yoda" },
+            { question: "What is the name of the bounty hunter who captures Han Solo?", answer: "Boba Fett" },
+            { question: "Which character is known for saying 'I’ve got a bad feeling about this'?", answer: "Multiple characters including Han Solo, Luke Skywalker, and Obi-Wan Kenobi" },
+            { question: "Who built C-3PO?", answer: "Anakin Skywalker" },
+            { question: "What is the name of the planet that Obi-Wan and Anakin duel on in Episode III?", answer: "Mustafar" },
+            { question: "Who is the Supreme Leader of the First Order?", answer: "Supreme Leader Snoke" },
+            { question: "What is the name of the desert planet where Anakin Skywalker was born?", answer: "Tatooine" },
+            { question: "What is the name of Han Solo’s co-pilot?", answer: "Chewbacca" },
+            { question: "Who is the Queen of Naboo?", answer: "Padmé Amidala" },
+            { question: "What is the name of the ancient Sith homeworld?", answer: "Korriban" },
+            { question: "Which Jedi Master trains Anakin Skywalker?", answer: "Obi-Wan Kenobi" },
+            { question: "What is the name of the Jedi Council's home planet?", answer: "Coruscant" },
+            { question: "Who is the mother of Luke and Leia?", answer: "Padmé Amidala" },
+            { question: "What is the name of the space station that the Death Star destroys?", answer: "Alderaan" },
+            { question: "What is the name of the creature that Luke Skywalker finds in the swamps of Dagobah?", answer: "Yoda" },
+            { question: "What is the name of the leader of the Ewoks?", answer: "Wicket W. Warrick" },
+            { question: "Who is the Jedi who survived Order 66 and later trained Luke Skywalker?", answer: "Obi-Wan Kenobi" },
+            { question: "What type of creature is Jabba the Hutt?", answer: "Hutt" },
+            { question: "Who is the pilot of the X-wing fighter Red Five?", answer: "Luke Skywalker" },
+            { question: "What planet is the home of the Jedi Order?", answer: "Coruscant" },
+            { question: "Who is the leader of the Separatists in Episode I?", answer: "Darth Sidious" },
+            { question: "What is the name of the prison planet in Episode VI?", answer: "The Forest Moon of Endor" },
+            { question: "What color is Darth Maul's lightsaber?", answer: "Red" },
+            { question: "Who is the villain in 'The Phantom Menace'?", answer: "Darth Maul" },
+            { question: "What is the name of the Wookiee homeworld?", answer: "Kashyyyk" },
+            { question: "Who is the head of the Galactic Republic?", answer: "Supreme Chancellor Palpatine" },
+            { question: "What is the name of the droid who carries the Death Star plans?", answer: "R2-D2" },
+            { question: "What is the name of the leader of the Galactic Empire?", answer: "Emperor Palpatine" },
+            { question: "What planet is the home of the bounty hunter Jango Fett?", answer: "Kamino" },
+            { question: "Who is the most famous Jedi Knight?", answer: "Luke Skywalker" },
+            { question: "What is the name of the giant planet-eating machine?", answer: "The Death Star" },
+            { question: "Who is the master of Yoda?", answer: "The Jedi Council (Yoda has no master)" },
+            { question: "What is the name of the Jedi Temple on Coruscant?", answer: "The Jedi Temple" },
+            { question: "What planet is known for its city in the clouds?", answer: "Bespin" },
+            { question: "What is the name of the first Star Wars film released in 1977?", answer: "Star Wars: Episode IV - A New Hope" },
+            { question: "Who is the father of Rey?", answer: "Rey’s parentage is revealed as being the daughter of Emperor Palpatine" },
+            { question: "Who trains Rey in 'The Force Awakens'?", answer: "Luke Skywalker" },
+            { question: "Who is the antagonist in 'The Force Awakens'?", answer: "Kylo Ren" },
+            { question: "What is the name of the final battle in 'Return of the Jedi'?", answer: "The Battle of Endor" },
+            { question: "Who is the owner of the Millennium Falcon before Han Solo?", answer: "Lando Calrissian" },
+            { question: "What is the name of the Sith Lord who betrays the Jedi Order?", answer: "Darth Sidious" },
+            { question: "What planet is known for its ice fields and rebel base?", answer: "Hoth" },
+            { question: "Who is the leader of the Resistance?", answer: "General Leia Organa" },
+            { question: "What is the name of the Force-sensitive scavenger in 'The Force Awakens'?", answer: "Rey" },
+            { question: "Who is the leader of the First Order's stormtroopers?", answer: "Captain Phasma" },
+            { question: "What is the name of the Jedi who trains Anakin Skywalker?", answer: "Obi-Wan Kenobi" },
+            { question: "What planet is known for its lush forests and the site of the final battle in 'Return of the Jedi'?", answer: "Endor" },
+            { question: "Who is the Emperor's right-hand man in 'Empire Strikes Back'?", answer: "Darth Vader" },
+            { question: "What is the name of the Jedi who is killed by Darth Vader in 'Revenge of the Sith'?", answer: "Mace Windu" },
+            { question: "Who is the leader of the Separatists in 'Attack of the Clones'?", answer: "Count Dooku" },
+            { question: "Who is the pilot of the X-wing fighter Red Five in 'A New Hope'?", answer: "Luke Skywalker" },
+            { question: "What is the name of the planet where the Jedi Order was founded?", answer: "Coruscant" },
+            { question: "What color is Yoda's lightsaber?", answer: "Green" },
+            { question: "What is the name of the rebel leader who orchestrates the attack on the Death Star?", answer: "Admiral Ackbar" },
+            { question: "What is the name of the character played by Natalie Portman in the prequel trilogy?", answer: "Padmé Amidala" },
+            { question: "Who is the leader of the Empire in 'Return of the Jedi'?", answer: "Emperor Palpatine" },
+            { question: "What is the name of the droid who accompanies Anakin Skywalker?", answer: "R2-D2" },
+            { question: "What is the name of the Force-sensitive character who becomes Kylo Ren?", answer: "Ben Solo" },
+            { question: "What planet is the site of the battle between the Jedi and the Sith in 'Revenge of the Sith'?", answer: "Mustafar" },
+            { question: "Who is the leader of the Ewoks in 'Return of the Jedi'?", answer: "Wicket W. Warrick" },
+            { question: "What is the name of the character who says 'Help me, Obi-Wan Kenobi, you’re my only hope'?", answer: "Princess Leia" },
+            { question: "What is the name of the character who builds a new lightsaber in 'The Force Awakens'?", answer: "Rey" },
+            { question: "Who is the father of Anakin Skywalker?", answer: "He has no known father; he was conceived by the Force." },
+            { question: "What planet is known for its lush forests and is the site of the Ewok village?", answer: "Endor" },
+            { question: "Who is the leader of the Resistance in 'The Last Jedi'?", answer: "General Leia Organa" },
+            { question: "What is the name of the Sith Lord who trains Darth Maul?", answer: "Darth Sidious" },
+            { question: "What planet is known for its treacherous swamps and dark side presence?", answer: "Dagobah" },
+            { question: "What is the name of the creature that Luke Skywalker battles in the Rancor pit?", answer: "Rancor" },
+            { question: "Who is the mentor of Obi-Wan Kenobi?", answer: "Qui-Gon Jinn" },
+            { question: "What is the name of the leader of the Galactic Republic during the Clone Wars?", answer: "Chancellor Palpatine" },
+            { question: "What is the name of the desert planet in 'Attack of the Clones'?", answer: "Tatooine" },
+            { question: "Who is the leader of the First Order in 'The Rise of Skywalker'?", answer: "Emperor Palpatine" },
+            { question: "What is the name of the planet that is the location of the Jedi Temple in 'Revenge of the Sith'?", answer: "Coruscant" },
+            { question: "Who is the leader of the Rebel Alliance in 'A New Hope'?", answer: "Mon Mothma" },
+            { question: "What is the name of the character who is a Jedi Master and trained Yoda?", answer: "The Jedi Council (Yoda has no master)" },
+            { question: "What is the name of the Emperor's home planet in 'The Return of the Jedi'?", answer: "Coruscant" },
+            { question: "Who is the droid that carries the Death Star plans in 'A New Hope'?", answer: "R2-D2" },
+            { question: "What is the name of the dark side character who wields a double-bladed lightsaber?", answer: "Darth Maul" },
+            { question: "Who is the leader of the Galactic Empire in 'Empire Strikes Back'?", answer: "Darth Vader" },
+            { question: "What is the name of the moon where the Ewoks live?", answer: "Endor" },
+            { question: "What is the name of the Force-sensitive scavenger in 'The Force Awakens'?", answer: "Rey" },
+            { question: "Who is the leader of the Resistance in 'The Last Jedi'?", answer: "General Leia Organa" },
+            { question: "What is the name of the character who is a former Jedi Knight and trains Rey?", answer: "Luke Skywalker" },
+            { question: "What is the name of the ancient Sith Lord who appears in 'The Rise of Skywalker'?", answer: "Emperor Palpatine" },
+            { question: "What is the name of the planet where the Jedi Order was founded?", answer: "Coruscant" },
+            { question: "Who is the leader of the Separatists in 'The Clone Wars'?", answer: "Count Dooku" },
+            { question: "What is the name of the character who is a Jedi Knight and becomes Darth Vader?", answer: "Anakin Skywalker" },
+            { question: "What is the name of the Star Wars film released in 2005?", answer: "Star Wars: Episode III - Revenge of the Sith" },
+            { question: "Who is the Jedi Knight who trains Luke Skywalker?", answer: "Obi-Wan Kenobi" },
+            { question: "What is the name of the planet known for its dense forests in 'Return of the Jedi'?", answer: "Endor" },
+            { question: "What is the name of the planet that is home to the Ewoks?", answer: "Endor" },
+            { question: "Who is the master of Darth Maul?", answer: "Darth Sidious" },
+            { question: "What is the name of the first Star Wars film released in 1977?", answer: "Star Wars: Episode IV - A New Hope" },
+            { question: "Who is the pilot of the X-wing fighter Red Five?", answer: "Luke Skywalker" },
+            { question: "What is the name of the Rebel Alliance leader in 'A New Hope'?", answer: "Mon Mothma" },
+            { question: "What is the name of the desert planet where Anakin Skywalker was born?", answer: "Tatooine" },
+            { question: "Who is the leader of the Galactic Empire in 'Empire Strikes Back'?", answer: "Darth Vader" },
+            { question: "What is the name of the droid that accompanies Anakin Skywalker?", answer: "R2-D2" },
+            { question: "What is the name of the Sith Lord who betrays the Jedi Order?", answer: "Darth Sidious" },
+            { question: "What is the name of the character who is a Jedi Knight and becomes Darth Vader?", answer: "Anakin Skywalker" },
+            { question: "What planet is known for its icy terrain and rebel base?", answer: "Hoth" },
+            { question: "What is the name of the ancient Sith homeworld?", answer: "Korriban" },
+            { question: "Who is the leader of the First Order in 'The Last Jedi'?", answer: "Supreme Leader Snoke" },
+            { question: "What is the name of the leader of the Rebel Alliance?", answer: "Mon Mothma" },
+            { question: "What is the name of the Force-sensitive scavenger in 'The Force Awakens'?", answer: "Rey" },
+            { question: "Who is the Sith Lord who trains Darth Maul?", answer: "Darth Sidious" },
+            { question: "What is the name of the Jedi who is trained by Qui-Gon Jinn?", answer: "Obi-Wan Kenobi" },
+            { question: "Who is the leader of the Galactic Republic during the Clone Wars?", answer: "Chancellor Palpatine" },
+            { question: "What planet is known for its dense forests and Ewok villages?", answer: "Endor" },
+            { question: "Who is the leader of the Galactic Empire in 'A New Hope'?", answer: "Grand Moff Tarkin" },
+            { question: "What is the name of the character who is a former Jedi Knight and trains Rey?", answer: "Luke Skywalker" },
+            { question: "What planet is known for its desert terrain and is the birthplace of Anakin Skywalker?", answer: "Tatooine" },
+            { question: "What is the name of the planet that is the location of the Jedi Temple in 'Revenge of the Sith'?", answer: "Coruscant" },
+            { question: "Who is the leader of the Separatists in 'Attack of the Clones'?", answer: "Count Dooku" },
+            { question: "What is the name of the Sith Lord who betrays the Jedi Order in 'Revenge of the Sith'?", answer: "Darth Sidious" },
+            { question: "What is the name of the character who says 'Help me, Obi-Wan Kenobi, you’re my only hope'?", answer: "Princess Leia" },
+            { question: "Who is the leader of the Rebel Alliance in 'Return of the Jedi'?", answer: "Mon Mothma" },
+            { question: "What planet is known for its lush forests and Ewok villages?", answer: "Endor" },
+            { question: "Who is the mentor of Obi-Wan Kenobi?", answer: "Qui-Gon Jinn" },
+            { question: "What is the name of the character who builds a new lightsaber in 'The Force Awakens'?", answer: "Rey" },
+            { question: "What planet is known for its lush forests and Ewok villages?", answer: "Endor" },
+            { question: "Who is the leader of the Galactic Republic during the Clone Wars?", answer: "Chancellor Palpatine" },
+            { question: "What is the name of the planet that is the home of the Jedi Order?", answer: "Coruscant" },
+            { question: "Who is the leader of the Galactic Empire in 'Empire Strikes Back'?", answer: "Darth Vader" },
+            { question: "What planet is known for its icy terrain and rebel base?", answer: "Hoth" },
+            { question: "Who is the Jedi Knight who trains Luke Skywalker?", answer: "Obi-Wan Kenobi" },
+            { question: "What is the name of the Sith Lord who appears in 'The Rise of Skywalker'?", answer: "Emperor Palpatine" },
+            { question: "What planet is known for its desert terrain and is the birthplace of Anakin Skywalker?", answer: "Tatooine" },
+            { question: "Who is the leader of the Rebel Alliance in 'A New Hope'?", answer: "Mon Mothma" },
+            { question: "What is the name of the ancient Sith homeworld?", answer: "Korriban" },
+            { question: "Who is the leader of the Galactic Empire in 'Return of the Jedi'?", answer: "Emperor Palpatine" },
+            { question: "What is the name of the Jedi Temple on Coruscant?", answer: "The Jedi Temple" },
+            { question: "What is the name of the character who trains Rey in 'The Force Awakens'?", answer: "Luke Skywalker" },
+            { question: "Who is the leader of the Galactic Empire in 'Empire Strikes Back'?", answer: "Darth Vader" },
+            { question: "What planet is known for its dense forests and Ewok villages?", answer: "Endor" },
+            { question: "Who is the mentor of Obi-Wan Kenobi?", answer: "Qui-Gon Jinn" },
+            { question: "What is the name of the planet that is the home of the Jedi Order?", answer: "Coruscant" },
+            { question: "Who is the Jedi Knight who trains Luke Skywalker?", answer: "Obi-Wan Kenobi" },
+            { question: "What is the name of the planet known for its icy terrain and rebel base?", answer: "Hoth" },
+            { question: "Who is the leader of the Galactic Empire in 'Return of the Jedi'?", answer: "Emperor Palpatine" },
+            { question: "What planet is known for its lush forests and Ewok villages?", answer: "Endor" },
+            { question: "Who is the Sith Lord who betrays the Jedi Order?", answer: "Darth Sidious" },
+            { question: "What is the name of the character who is a Jedi Knight and becomes Darth Vader?", answer: "Anakin Skywalker" },
+            { question: "What planet is known for its desert terrain and is the birthplace of Anakin Skywalker?", answer: "Tatooine" },
+            { question: "Who is the leader of the Galactic Republic during the Clone Wars?", answer: "Chancellor Palpatine" },
+            { question: "What is the name of the planet known for its lush forests and Ewok villages?", answer: "Endor" },
+            { question: "Who is the leader of the Galactic Empire in 'Empire Strikes Back'?", answer: "Darth Vader" },
+            { question: "What is the name of the Jedi who trains Anakin Skywalker?", answer: "Obi-Wan Kenobi" },
+            { question: "What is the name of the character who is a Jedi Knight and trains Rey?", answer: "Luke Skywalker" },
+            { question: "What planet is known for its desert terrain and is the birthplace of Anakin Skywalker?", answer: "Tatooine" },
+            { question: "What is the name of the planet that is the home of the Jedi Order?", answer: "Coruscant" },
+            { question: "Who is the leader of the Rebel Alliance in 'Return of the Jedi'?", answer: "Mon Mothma" },
+            { question: "What is the name of the character who trains Rey in 'The Force Awakens'?", answer: "Luke Skywalker" },
+            { question: "What planet is known for its dense forests and Ewok villages?", answer: "Endor" },
+            { question: "Who is the mentor of Obi-Wan Kenobi?", answer: "Qui-Gon Jinn" },
+            { question: "What is the name of the droid that accompanies Anakin Skywalker?", answer: "R2-D2" },
+            { question: "What is the name of the Sith Lord who betrays the Jedi Order in 'Revenge of the Sith'?", answer: "Darth Sidious" },
+            { question: "What is the name of the character who is a Jedi Knight and becomes Darth Vader?", answer: "Anakin Skywalker" },
+            { question: "What is the name of the planet known for its icy terrain and rebel base?", answer: "Hoth" },
+            { question: "Who is the leader of the Galactic Empire in 'Return of the Jedi'?", answer: "Emperor Palpatine" },
+            { question: "What is the name of the Jedi Temple on Coruscant?", answer: "The Jedi Temple" },
+            { question: "What is the name of the character who builds a new lightsaber in 'The Force Awakens'?", answer: "Rey" },
+            { question: "What planet is known for its lush forests and Ewok villages?", answer: "Endor" },
+            { question: "Who is the leader of the Galactic Republic during the Clone Wars?", answer: "Chancellor Palpatine" },
+            { question: "What is the name of the Jedi who trains Luke Skywalker?", answer: "Obi-Wan Kenobi" },
+            { question: "What is the name of the planet that is home to the Jedi Order?", answer: "Coruscant" },
+            { question: "Who is the leader of the Galactic Empire in 'Empire Strikes Back'?", answer: "Darth Vader" },
+            { question: "What planet is known for its desert terrain and is the birthplace of Anakin Skywalker?", answer: "Tatooine" },
+            { question: "What is the name of the planet known for its dense forests and Ewok villages?", answer: "Endor" },
+            { question: "Who is the mentor of Obi-Wan Kenobi?", answer: "Qui-Gon Jinn" },
+            { question: "What is the name of the character who builds a new lightsaber in 'The Force Awakens'?", answer: "Rey" },
+            { question: "What planet is known for its lush forests and Ewok villages?", answer: "Endor" },
+            { question: "Who is the leader of the Galactic Republic during the Clone Wars?", answer: "Chancellor Palpatine" },
+            { question: "What is the name of the Jedi who trains Luke Skywalker?", answer: "Obi-Wan Kenobi" },
+            { question: "What is the name of the character who trains Rey in 'The Force Awakens'?", answer: "Luke Skywalker" },
+            { question: "What is the name of the Jedi Temple on Coruscant?", answer: "The Jedi Temple" },
+            { question: "What planet is known for its icy terrain and rebel base?", answer: "Hoth" },
+            { question: "What is the name of the Sith Lord who betrays the Jedi Order in 'Revenge of the Sith'?", answer: "Darth Sidious" },
+            { question: "Who is the leader of the Galactic Empire in 'Return of the Jedi'?", answer: "Emperor Palpatine" },
+            { question: "What planet is known for its dense forests and Ewok villages?", answer: "Endor" },
+            { question: "What is the name of the character who trains Rey in 'The Force Awakens'?", answer: "Luke Skywalker" },
+            { question: "What is the name of the Jedi who trains Luke Skywalker?", answer: "Obi-Wan Kenobi" },
+            { question: "Who is the leader of the Galactic Empire in 'Empire Strikes Back'?", answer: "Darth Vader" },
+            { question: "What is the name of the planet that is the home of the Jedi Order?", answer: "Coruscant" },
+            { question: "What is the name of the character who is a Jedi Knight and trains Rey?", answer: "Luke Skywalker" },
+            { question: "What planet is known for its desert terrain and is the birthplace of Anakin Skywalker?", answer: "Tatooine" },
+            { question: "What is the name of the Jedi who trains Luke Skywalker?", answer: "Obi-Wan Kenobi" },
+            { question: "What is the name of the planet that is home to the Jedi Order?", answer: "Coruscant" },
+            { question: "What is the name of the character who is a Jedi Knight and becomes Darth Vader?", answer: "Anakin Skywalker" },
+            { question: "What planet is known for its dense forests and Ewok villages?", answer: "Endor" },
+            { question: "What is the name of the Sith Lord who betrays the Jedi Order in 'Revenge of the Sith'?", answer: "Darth Sidious" },
+            { question: "Who is the leader of the Galactic Republic during the Clone Wars?", answer: "Chancellor Palpatine" },
+            { question: "What planet is known for its desert terrain and is the birthplace of Anakin Skywalker?", answer: "Tatooine" },
+            { question: "What is the name of the Jedi who trains Anakin Skywalker?", answer: "Obi-Wan Kenobi" },
+            { question: "What is the name of the character who is a Jedi Knight and becomes Darth Vader?", answer: "Anakin Skywalker" },
+            { question: "What is the name of the Sith Lord who appears in 'The Rise of Skywalker'?", answer: "Emperor Palpatine" },
+            { question: "What planet is known for its dense forests and Ewok villages?", answer: "Endor" },
+            { question: "Who is the leader of the Galactic Republic during the Clone Wars?", answer: "Chancellor Palpatine" },
+            { question: "What is the name of the Jedi Temple on Coruscant?", answer: "The Jedi Temple" },
+            { question: "What is the name of the Sith Lord who betrays the Jedi Order in 'Revenge of the Sith'?", answer: "Darth Sidious" },
+            { question: "What planet is known for its dense forests and Ewok villages?", answer: "Endor" },
+            { question: "What is the name of the planet known for its desert terrain and is the birthplace of Anakin Skywalker?", answer: "Tatooine" },
+            { question: "Who is the leader of the Galactic Empire in 'Empire Strikes Back'?", answer: "Darth Vader" },
+            { question: "What is the name of the Jedi who trains Luke Skywalker?", answer: "Obi-Wan Kenobi" },
+            { question: "What is the name of the planet that is home to the Jedi Order?", answer: "Coruscant" },
+            { question: "Who is the leader of the Rebel Alliance in 'Return of the Jedi'?", answer: "Mon Mothma" },
+            { question: "What planet is known for its icy terrain and rebel base?", answer: "Hoth" },
+            { question: "Who is the leader of the Galactic Empire in 'Return of the Jedi'?", answer: "Emperor Palpatine" },
+            { question: "What is the name of the Jedi Temple on Coruscant?", answer: "The Jedi Temple" },
+            { question: "What is the name of the Jedi who trains Anakin Skywalker?", answer: "Obi-Wan Kenobi" },
+            { question: "What planet is known for its dense forests and Ewok villages?", answer: "Endor" },
+            { question: "Who is the leader of the Galactic Empire in 'Empire Strikes Back'?", answer: "Darth Vader" },
+            { question: "What is the name of the Sith Lord who betrays the Jedi Order in 'Revenge of the Sith'?", answer: "Darth Sidious" },
+            { question: "What planet is known for its desert terrain and is the birthplace of Anakin Skywalker?", answer: "Tatooine" },
+            { question: "What is the name of the planet that is home to the Jedi Order?", answer: "Coruscant" },
+            { question: "What is the name of the Jedi Temple on Coruscant?", answer: "The Jedi Temple" },
+            { question: "Who is the leader of the Rebel Alliance in 'Return of the Jedi'?", answer: "Mon Mothma" },
+            { question: "What is the name of the Jedi who trains Luke Skywalker?", answer: "Obi-Wan Kenobi" },
+            { question: "What is the name of the Sith Lord who betrays the Jedi Order in 'Revenge of the Sith'?", answer: "Darth Sidious" },
+            { question: "What planet is known for its desert terrain and is the birthplace of Anakin Skywalker?", answer: "Tatooine" },
+            { question: "What is the name of the Jedi Temple on Coruscant?", answer: "The Jedi Temple" },
+            { question: "What planet is known for its dense forests and Ewok villages?", answer: "Endor" },
+            { question: "Who is the leader of the Galactic Republic during the Clone Wars?", answer: "Chancellor Palpatine" },
+            { question: "What is the name of the Jedi who trains Luke Skywalker?", answer: "Obi-Wan Kenobi" },
+            { question: "What is the name of the Jedi Temple on Coruscant?", answer: "The Jedi Temple" }
+        ];
+
+        function displayQuestions() {
+            const container = document.getElementById("questionsContainer");
+            questions.forEach((questionObj, index) => {
+                const questionDiv = document.createElement("div");
+                questionDiv.className = "question";
+                questionDiv.innerHTML = `
+                    <strong>Question ${index + 1}:</strong> ${questionObj.question}
+                    <button onclick="toggleAnswer(${index})">Show Answer</button>
+                    <div id="answer-${index}" class="answer" style="display: none;">
+                        ${questionObj.answer}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function toggleAnswer(index) {
+            const answerDiv = document.getElementById(`answer-${index}`);
+            if (answerDiv.style.display === "none") {
+                answerDiv.style.display = "block";
+            } else {
+                answerDiv.style.display = "none";
+            }
+        }
+
+        displayQuestions();
+    </script>
+</body>
+</html>
